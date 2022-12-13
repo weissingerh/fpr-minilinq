@@ -34,5 +34,6 @@ let simpleGrep (search : list<string>)(files : list<string>) : list<fileLine> =
     |> List.concat
     |> List.where(fun fileLine -> lineContainsAnySearch fileLine search)
  
-
-simpleGrep ["Lorem";"reprehenderit";"Excepteur"] ["lorem.txt"; "ipsum.txt"]
+let grep: list<fileLine> = simpleGrep ["Lorem";"reprehenderit";"Excepteur"] ["lorem.txt"; "ipsum.txt"]
+let getMaxOfList: Option<int> = tryMax list
+let filterByOdd: list<int> = filter (fun c -> c % 2 = 1) list

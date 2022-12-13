@@ -19,35 +19,20 @@ let tryMax (list: list<int>): Option<int> =
         let listMax = List.fold max 0
         Some(listMax list)
 
-open System.IO
-
-type fileLine = { content : string; number : int; fileName : string}
+type fileLine = { content : string; lineNumber : int; fileName : string}
 
 let readFile (file : string) : list<fileLine> = 
     File.ReadAllLines(file) 
     |> List.ofArray 
-    |> List.mapi(fun i x -> {content = x; number = i + 1; fileName = file}) 
+    |> List.mapi(fun i x -> {content = x; lineNumber = i + 1; fileName = file}) 
 
-let lineContainsSearch (line: string) (search : string) = line.Contains(search)
+let lineContainsAnySearch (line: fileLine) (search: list<string>): bool = List.exists(fun (x: string) -> line.content.Contains(x)) search
 
-let simpleGrep (search : list<string>)(files : list<string>) = // : list<string> =
-    let allLines = List.map(fun x -> readFile x) files
-    printfn "%A" allLines
+let simpleGrep (search : list<string>)(files : list<string>) : list<fileLine> = 
+    files 
+    |> List.map(fun x -> readFile x)
+    |> List.concat
+    |> List.where(fun fileLine -> lineContainsAnySearch fileLine search)
+ 
 
-
-
-// let array = readFile "ipsum.txt"
-// printfn "%A" array
-
-// let findStringMatch (file : string) (search : string): list<string> = 
-//     let list = []
-//     let fileContent: string array = readFile file
-    // List.map (fun s -> lineContainsSearch s)
-
-
-
-// let searchFile (search : list<string>) (file: string): list<string> =
-//     List.choose 
-
-// let filterByOdd: list<int> = filter (fun c -> c % 2 = 1) list
-// let getMax: Option<int> = tryMax list
+simpleGrep ["Lorem";"reprehenderit";"Excepteur"] ["lorem.txt"; "ipsum.txt"]
